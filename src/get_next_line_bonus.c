@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chdonnat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: christophedonnat <christophedonnat@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/25 09:37:15 by chdonnat          #+#    #+#             */
-/*   Updated: 2024/11/25 15:30:06 by chdonnat         ###   ########.fr       */
+/*   Created: 2024/11/25 15:32:21 by chdonnat          #+#    #+#             */
+/*   Updated: 2024/12/26 09:38:45 by christophed      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/libft.h"
+#include "../includes/get_next_line_bonus.h"
 
 void	ft_add_to_list(t_list **p_list, char *buff, int readed)
 {
@@ -28,10 +29,10 @@ void	ft_add_to_list(t_list **p_list, char *buff, int readed)
 	i = 0;
 	while (buff[i] && i < readed)
 	{
-		new_node->content[i] = buff[i];
+		((char *)new_node->content)[i] = buff[i];
 		i++;
 	}
-	new_node->content[i] = '\0';
+	((char *)new_node->content)[i] = '\0';
 	if (*p_list == 0)
 	{
 		*p_list = new_node;
@@ -74,9 +75,9 @@ void	ft_generate_line(char **p_line, t_list *list)
 	while (list)
 	{
 		i = 0;
-		while (list->content[i])
+		while (((char *)list->content)[i])
 		{
-			if (list->content[i] == '\n')
+			if (((char *)list->content)[i] == '\n')
 			{
 				len++;
 				break ;
@@ -103,14 +104,14 @@ void	ft_extract_line(t_list *list, char **p_line)
 	while (list)
 	{
 		i = 0;
-		while (list->content[i])
+		while (((char *)list->content)[i])
 		{
-			if (list->content[i] == '\n')
+			if (((char *)list->content)[i] == '\n')
 			{
-				(*p_line)[j++] = list->content[i];
+				(*p_line)[j++] = ((char *)list->content)[i];
 				break ;
 			}
-			(*p_line)[j++] = list->content[i++];
+			(*p_line)[j++] = ((char *)list->content)[i++];
 		}
 		list = list->next;
 	}
@@ -119,44 +120,27 @@ void	ft_extract_line(t_list *list, char **p_line)
 
 char	*get_next_line(int fd)
 {
-	static t_list	*list = NULL;
+	static t_list	*list[1024];
 	char			*line;
 	t_list			*temp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (ft_read_to_list(fd, &list) == -1)
+	if (ft_read_to_list(fd, &list[fd]) == -1)
 	{
-		while (list)
+		while (list[fd])
 		{
-			temp = list->next;
-			free(list->content);
-			free(list);
-			list = temp;
+			temp = list[fd]->next;
+			free(list[fd]->content);
+			free(list[fd]);
+			list[fd] = temp;
 		}
 	}
-	if (!list)
+	if (!list[fd])
 		return (NULL);
-	ft_extract_line(list, &line);
-	ft_clean_list(&list);
+	ft_extract_line(list[fd], &line);
+	ft_clean_list(&list[fd]);
 	if (line[0] == '\0')
-		return (ft_free_list(list), list = NULL, free(line), NULL);
+		return (ft_free_list(list[fd]), list[fd] = NULL, free(line), NULL);
 	return (line);
 }
-/*
-#include <stdio.h>
-int main(void)
-{
-	int	fd;
-	char	*line;
-
-	fd = open("test", O_RDONLY);
-	while((line = get_next_line(fd)) != NULL)
-	{
-		printf("%s", line);
-		free(line);
-	}
-	close(fd);
-	return (0);
-}
-*/

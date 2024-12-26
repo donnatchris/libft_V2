@@ -1,26 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chdonnat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: christophedonnat <christophedonnat@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/25 09:37:44 by chdonnat          #+#    #+#             */
-/*   Updated: 2024/11/25 09:37:46 by chdonnat         ###   ########.fr       */
+/*   Created: 2024/11/25 09:37:31 by chdonnat          #+#    #+#             */
+/*   Updated: 2024/12/26 09:38:53 by christophed      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	len;
-
-	len = 0;
-	while (str[len])
-		len++;
-	return (len);
-}
+#include "../includes/libft.h"
+#include "../includes/get_next_line_bonus.h"
 
 int	ft_has_newline(t_list *list)
 {
@@ -31,9 +22,9 @@ int	ft_has_newline(t_list *list)
 		return (0);
 	current = ft_lst_get_last(list);
 	i = 0;
-	while (current->content[i])
+	while (((char *)current->content)[i])
 	{
-		if (current->content[i] == '\n')
+		if (((char *)current->content)[i] == '\n')
 			return (1);
 		i++;
 	}
@@ -78,17 +69,17 @@ void	ft_clean_list(t_list	**p_list)
 	clean_node->next = NULL;
 	last = ft_lst_get_last(*p_list);
 	i = 0;
-	while (last->content[i] && last->content[i] != '\n')
+	while (((char *)last->content)[i] && ((char *)last->content)[i] != '\n')
 		i++;
-	if (last->content && last->content[i] == '\n')
+	if (last->content && ((char *)last->content)[i] == '\n')
 		i++;
 	clean_node->content = (char *) malloc((ft_strlen(last->content) - i) + 1);
 	if (!(clean_node->content))
 		return ;
 	j = 0;
-	while (last->content[i])
-		clean_node->content[j++] = last->content[i++];
-	clean_node->content[j] = '\0';
+	while (((char *)last->content)[i])
+		((char *)clean_node->content)[j++] = ((char *)last->content)[i++];
+	((char *)clean_node->content)[j] = '\0';
 	ft_free_list(*p_list);
 	*p_list = clean_node;
 }

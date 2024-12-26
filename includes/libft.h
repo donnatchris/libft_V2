@@ -6,7 +6,7 @@
 /*   By: christophedonnat <christophedonnat@stud    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 13:45:58 by chdonnat          #+#    #+#             */
-/*   Updated: 2024/12/26 08:45:11 by christophed      ###   ########.fr       */
+/*   Updated: 2024/12/26 09:20:06 by christophed      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,5 +303,9 @@ int	ft_printf(const char *str, ...);
 //	Outputs the string str to the standard output (like printf())
 // 	allowing the use of meta-characters to print variables.
 //		-> Returns the number of characters printed.
+
+char	*get_next_line(int fd);
+//	Reads a line from a file descriptor.
+//		-> Returns a pointer to the line read or NULL if an error occurs.
 
 #endif
